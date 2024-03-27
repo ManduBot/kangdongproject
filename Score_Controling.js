@@ -4,7 +4,7 @@ function showAnswer(){
   for (var i in left){
     for (var n in right){
       if (left[i].indexOf(right[n])!=-1){
-        console.log((Number(i)+1)+','+(Number(n)+1))
+        return ((Number(i)+1)+','+(Number(n)+1))
       }
     }
   }
