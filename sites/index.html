@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+    <h1>자리배치</h1>
+    <br>under construction
+    <table id="자리">
+        <caption>교탁</caption>
+        <tr>
+            <td>자리</td>
+            <td>자리</td>
+            <td class="void"></td>
+            <td>자리</td>
+            <td>자리</td>
+            <td class="void"></td>
+            <td>자리</td>
+            <td>자리</td>
+        </tr>
+        <td>자리</td>
+        <td>자리</td>
+        <td class="void"></td>
+        <td>자리</td>
+        <td>자리</td>
+        <td class="void"></td>
+        <td>자리</td>
+        <td>자리</td>
+        <tr>
+            <td>자리</td>
+            <td>자리</td>
+            <td class="void"></td>
+            <td>자리</td>
+            <td>자리</td>
+            <td class="void"></td>
+            <td>자리</td>
+            <td>자리</td>
+        </tr>
+        <tr>
+            <td>자리</td>
+            <td>자리</td>
+            <td class="void"></td>
+            <td>자리</td>
+            <td>자리</td>
+            <td class="void"></td>
+            <td>자리</td>
+            <td>자리</td>
+        </tr>
+    </table>
+    <button onclick="randomizer()">배치</button>
+    <script>
+        var students = 24
+        var table = document.getElementById("자리")
+        function randomizer(){
+            var number = []
+            for (var i = 0; i<students; i++) number.push(i+1);
+            for (var r of table.rows){
+               for (var i = 0; i<8; i++){
+                    console.log(r.cells[i])
+                    if (r.cells[i].className=="void") continue;
+                    var rn = number.splice(Math.floor(Math.random()*number.length),1)
+                    r.cells[i].innerText = rn<10 ? 0+String(rn) : rn
+                }
+            }
+        }
+    </script>
+</body>
+</html>

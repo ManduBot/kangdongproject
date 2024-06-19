@@ -1,0 +1,19 @@
+table{
+  width:100%;
+  border:5px solid #222;
+  border-collapse: collapse;
+  text-align:center;
+  background-color: burlywood;
+}
+td,th{
+  border:5px solid black;
+  font-size:100px
+}
+.void{
+  background-color: white;
+  font-size:10px;
+  border:0px
+}
+caption{
+  font-size:50px;
+}
