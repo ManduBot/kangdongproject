@@ -1,0 +1,114 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char ***split_block(char *block, int *line_count);
+char **split_line(char *line, int *item_count);
+
+int main() {
+    FILE *file = fopen("data.txt", "r");
+    if (!file) {
+        perror("파일 열기 실패");
+        return 1;
+    }
+
+    // 파일 전체 읽기
+    fseek(file, 0, SEEK_END);
+    long filesize = ftell(file);
+    rewind(file);
+
+    char *buffer = malloc(filesize + 1);
+    fread(buffer, 1, filesize, file);
+    buffer[filesize] = '\0';
+    fclose(file);
+
+    // block 단위 분리
+    int block_count = 0;
+    int block_capacity = 4;
+    char ****blocks = malloc(block_capacity * sizeof(char ***));
+    int *line_counts = malloc(block_capacity * sizeof(int));
+
+    char *block_str = strtok(buffer, "@");
+    while (block_str) {
+        if (block_count >= block_capacity) {
+            block_capacity *= 2;
+            blocks = realloc(blocks, block_capacity * sizeof(char ***));
+            line_counts = realloc(line_counts, block_capacity * sizeof(int));
+        }
+
+        blocks[block_count] = split_block(block_str, &line_counts[block_count]);
+        block_count++;
+        block_str = strtok(NULL, "@");
+    }
+
+    // 출력
+    for (int b = 0; b < block_count; b++) {
+        printf("Block %d:\n", b);
+        for (int l = 0; l < line_counts[b]; l++) {
+            char **items = blocks[b][l];
+            for (int i = 0; items[i] != NULL; i++) {
+                printf("%s ", items[i]);
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+
+    // 메모리 해제
+    for (int b = 0; b < block_count; b++) {
+        for (int l = 0; l < line_counts[b]; l++) {
+            char **items = blocks[b][l];
+            for (int i = 0; items[i] != NULL; i++) {
+                free(items[i]);
+            }
+            free(items);
+        }
+        free(blocks[b]);
+    }
+    free(blocks);
+    free(line_counts);
+    free(buffer);
+
+    return 0;
+}
+
+char ***split_block(char *block, int *line_count) {
+    int line_capacity = 4;
+    char ***lines = malloc(line_capacity * sizeof(char **));
+    *line_count = 0;
+
+    char *line_str = strtok(block, "\n");
+    while (line_str) {
+        if (*line_count >= line_capacity) {
+            line_capacity *= 2;
+            lines = realloc(lines, line_capacity * sizeof(char **));
+        }
+
+        int item_count = 0;
+        lines[*line_count] = split_line(line_str, &item_count);
+        (*line_count)++;
+
+        line_str = strtok(NULL, "\n");
+    }
+    return lines;
+}
+
+char **split_line(char *line, int *item_count) {
+    int item_capacity = 4;
+    char **items = malloc(item_capacity * sizeof(char *));
+    *item_count = 0;
+
+    char *item_str = strtok(line, ",");
+    while (item_str) {
+        if (*item_count >= item_capacity) {
+            item_capacity *= 2;
+            items = realloc(items, item_capacity * sizeof(char *));
+        }
+
+        items[*item_count] = strdup(item_str);
+        (*item_count)++;
+        item_str = strtok(NULL, ",");
+    }
+    items[*item_count] = NULL; // 마지막에 NULL 추가
+    return items;
+}
